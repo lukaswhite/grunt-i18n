@@ -29,7 +29,7 @@ module.exports = function (grunt) {
           });
         }
 
-        result = "define(" + JSON.stringify(json, null, 4) + ");";
+        result = "define(" + JSON.stringify(json, null, 2) + ");";
         writeToFile(result, file.dest + ".js");
       });
     }

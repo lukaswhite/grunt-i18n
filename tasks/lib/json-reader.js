@@ -6,6 +6,7 @@ module.exports = function(grunt) {
 
   Reader.prototype = {
     jsonTask: function (data) {
+
       var jsonRoot  = data.json.rootJson,
           jsonFiles = data.json.files,
           json, properties;
@@ -21,7 +22,7 @@ module.exports = function(grunt) {
         if (file.isRoot) {
           json = json.root;
         }
-
+        
         properties = convertJsonToProperties(jsonRoot, json);
         if (file.split) {
           for (var key in properties) {
@@ -49,20 +50,37 @@ module.exports = function(grunt) {
         filejson = content.replace(newlineRegex, '').replace(whitespacesRegex, ' ').replace(concatRegex, '').match(jsonRegex)[0],
         tmp      = filejson.replace(jsonKeysRegex, "\"$1\"$2");
 
+    //console.log(tmp);
+
     return JSON.parse(tmp);
   }
 
   function convertJsonToProperties (root, json) {
-    var keys = Object.keys(json[root]),
-        obj  = {};
+    
+    var obj  = {};
 
-    keys.forEach(function (key) {
-      var values = [];
-      getProperties(json[root][key], values);
-      appendRoot(root + '.' + key, values);
-      obj[key] = values;
-    });
+    console.log(typeof root)
 
+    if (typeof root != "undefined") {      
+      var keys = Object.keys(json[root]);  
+      
+      keys.forEach(function (key) {        
+        var values = [];
+        getProperties(json[root][key], values);
+        appendRoot(root + '.' + key, values);
+        obj[key] = values;
+      });
+    } else {
+      var keys = Object.keys(json);
+      
+      keys.forEach(function (key) {        
+        var values = [];
+        getProperties(json[key], values);
+        appendRoot(key, values);
+        obj[key] = values;
+      });
+    }
+    
     return obj;
   }
 
